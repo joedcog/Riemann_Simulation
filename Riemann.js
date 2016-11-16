@@ -333,7 +333,7 @@ var Graph = {
         return toReturn;
     }
 
-  }
+  },
 
     drawGraph: function() { //bug where window isn't filled...bug where asymptotes screw things up
     Graph.numGraphDrawn++;
