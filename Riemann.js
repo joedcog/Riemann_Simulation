@@ -325,7 +325,8 @@ var Graph = {
         var prevXVal = "";
         var prevYVal = "";
 
-        this.resolution = parseInt($('#resolution').val());
+        //this.resolution = parseInt($('#resolution').val());
+        this.resolution = 100;
         var graphContent = document.getElementById('graphContents');
         var graphContentLeft = document.getElementById('leftGraphContents');
         var graphContentIntegral = document.getElementById('integralGraphContents');
@@ -431,7 +432,7 @@ var Graph = {
         path = "M" + (20 + this.widthx * (b - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
         for (var K = 1; K <= N; K++) {
             yVal = this.evaluateEquation(xVal);
-            if (isFinite(yVal)) {
+            if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
                 path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
 
             } else if (isNaN(yVal)) {
@@ -464,7 +465,7 @@ var Graph = {
         path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
         for (var K = 1; K <= N; K++) {
             yVal = this.evaluateEquation(xVal);
-            if (isFinite(yVal)) {
+            if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
                 path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
 
             } else if (isNaN(yVal)) {
@@ -514,7 +515,7 @@ var Graph = {
 
         }
         if (isFinite(yVal)) {
-            //console.log(parseFloat(yVal * this.widthy))
+            console.log(parseFloat(yVal * this.widthy))
             path += " v" + (parseFloat(yVal * this.widthy));
         }
 
@@ -602,7 +603,7 @@ var Graph = {
         var a = parseInt($('#a').val());
         var b = parseInt($('#b').val());
         var xVal = b;
-        var size = 500;
+        var size = 1000;
         var tempY = 0;
         var prevYVal = 0;
         for (var i = 0; i < size * (b - a); i++) {
@@ -614,7 +615,8 @@ var Graph = {
                 if (!isFinite(tempY)) {
                     //Graph.integralValue = "diverges";
                     break;
-                } else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 999999) {
+                } //else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 9999999) {
+                  else if (isNaN(tempY)) {
                     Graph.integralValue = "diverges";
                     break;
                 } else {
@@ -647,7 +649,8 @@ var Graph = {
                     if (!isFinite(tempY)) {
                         //Graph.integralValue = "diverges";
                         break;
-                    } else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 999999) {
+                    } //else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 9999999) {
+                        else if (isNaN(tempY)) {
                         Graph.integralValue = "diverges";
                         break;
                     } else {
