@@ -314,7 +314,9 @@ var Graph = {
 
     },
 
-    drawGraph: function() { //bug where window isn't filled...bug where asymptotes screw things up
+
+
+    drawGraph: function() {
         Graph.numGraphDrawn++;
         var svgWidth = 500;
         var svgHeight = 500;
@@ -324,6 +326,7 @@ var Graph = {
         var low = false;
         var prevXVal = "";
         var prevYVal = "";
+        var nully = false;
 
         //this.resolution = parseInt($('#resolution').val());
         this.resolution = 100;
@@ -335,16 +338,18 @@ var Graph = {
         var xVal = parseInt($('#minX').val()); //need object variable to keep up with xVal showing in graph
 
         var yVal = this.evaluateEquation(xVal);
+        //console.log(yVal);
         var prevY = 0;
         this.widthx = 460 / Math.abs(parseInt($('#minX').val()) - parseInt($('#maxX').val()));
         Graph.yAxisPosition = 20 + (-1 * this.widthx * (parseInt($('#minX').val())));
         this.widthy = 460 / Math.abs(parseInt($('#minY').val()) - parseInt($('#maxY').val()));
         Graph.xAxisPosition = 20 + (this.widthy * (parseInt($('#maxY').val())));
-        
-        if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+
+        if (!isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
             var path = "M20 " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
         } else {
-            path = "M20 " + (Graph.xAxisPosition - parseFloat(parseInt($('#maxY').val()) * this.widthy) * 20) + " ";
+            var path = "";
+            nully = true;
         }
 
         for (var i = (20); i <= (svgWidth - 20); i += this.widthx) {
@@ -353,62 +358,74 @@ var Graph = {
 
                 var yVal = this.evaluateEquation(xVal + (j / this.resolution));
 
-                if ((yVal <= parseInt($('#maxY').val())) && (yVal >= parseInt($('#minY').val())) && (isFinite(yVal)) && !(isNaN(yVal))) {
-                    if (infinity) {
+                if (!isNaN(yVal)) {
+                    if (nully) {
+                        nully = false;
+                        //console.log("enter");
+                        path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+                        //console.log(path);
+                    }
 
-                        infinity = false;
-                        if (prevYVal > 0) {
-                            path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
-                            //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
-                        } else {
-                            path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
-                            //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
-                        }
-                    }
-                    if (high) {
-                        high = false;
-                        path += Graph.backToBelowUpper((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-                    }
-                    if (low) {
-                        low = false;
-                        path += Graph.backToAboveLower((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-                    }
-                    if (infinity) {
+                    if ((yVal <= parseInt($('#maxY').val())) && (yVal >= parseInt($('#minY').val())) && (isFinite(yVal)) && !(isNaN(yVal))) {
+                        if (infinity) {
 
-                        infinity = false;
-                        if (prevYVal > 0) {
-                            path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
-                            //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
-                        } else {
-                            path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
-                            //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
+                            infinity = false;
+                            if (prevYVal > 0) {
+                                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
+                                //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
+                            } else {
+                                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
+                                //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
+                            }
                         }
+                        if (high) {
+                            high = false;
+                            path += Graph.backToBelowUpper((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+                        }
+                        if (low) {
+                            low = false;
+                            path += Graph.backToAboveLower((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+                        }
+                        if (infinity) {
+
+                            infinity = false;
+                            if (prevYVal > 0) {
+                                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
+                                //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
+                            } else {
+                                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
+                                //console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
+                            }
+                        }
+                        if (!high && !low && !infinity) {
+                            path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+                        }
+                    } else {
+                        if (isNaN(yVal)) {
+
+                        } else if (yVal > parseInt($('#maxY').val()) && isFinite(yVal) && !high) {
+                            high = true;
+                            path += Graph.outsideUpperRange((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+                        } else if (yVal < parseInt($('#minY').val()) && isFinite(yVal) && !low) {
+                            path += Graph.outsideLowerRange((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+                            low = true;
+                        } else if (!isFinite(yVal)) {
+                            //console.log("entered inf");
+                            infinity = true;
+                        }
+
                     }
-                    if (!high && !low && !infinity) {
-                        path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-                    }
+
+
+                    prevY = yVal;
                 } else {
-                    if (isNaN(yVal)) {
-
-                    } else if (yVal > parseInt($('#maxY').val()) && isFinite(yVal) && !high) {
-                        high = true;
-                        path += Graph.outsideUpperRange((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-                    } else if (yVal < parseInt($('#minY').val()) && isFinite(yVal) && !low) {
-                        path += Graph.outsideLowerRange((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-                        low = true;
-                    } else if (!isFinite(yVal)) {
-                        infinity = true;
-                    }
-
+                    nully = true;
                 }
-
-
-                prevY = yVal;
             }
-
             xVal++;
-            console.log(xVal);
+            //console.log(xVal);
         }
+        //console.log(path);
         image.setAttribute('d', path);
         image.setAttribute('stroke-width', '2');
         image.setAttribute('stroke', 'red');
@@ -432,22 +449,27 @@ var Graph = {
         path = "M" + (20 + this.widthx * (b - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
         for (var K = 1; K <= N; K++) {
             yVal = this.evaluateEquation(xVal);
-            if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-                path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
+            if (!isNaN(yVal)) {
+                if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+                    path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
 
-            } else if (isNaN(yVal)) {
-                yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
-                path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
-            } else {
-                if (this.evaluateEquation(xVal - .001) > 0) {
-                    path = path + " v" + -1 * (parseFloat(parseInt($('#maxY').val()) * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat(parseInt($('#maxY').val()) * this.widthy)));
+                } else if (isNaN(yVal)) {
+                    yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
+                    path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
                 } else {
-                    path = path + " v" + -1 * (parseFloat(parseInt($('#minY').val()) * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat(parseInt($('#minY').val()) * this.widthy)));
+                    if (this.evaluateEquation(xVal - .001) > 0) {
+                        path = path + " v" + -1 * (parseFloat(parseInt($('#maxY').val()) * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat(parseInt($('#maxY').val()) * this.widthy)));
+                    } else {
+                        path = path + " v" + -1 * (parseFloat(parseInt($('#minY').val()) * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat(parseInt($('#minY').val()) * this.widthy)));
+                    }
+                    //console.log("asymptote in sum");
                 }
-                //console.log("asymptote in sum");
+            } else {
+                path = "";
+                break;
             }
             xVal = xVal - ((b - a) / N);
-
+            
         }
         //console.log(path);
         image2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -465,21 +487,28 @@ var Graph = {
         path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
         for (var K = 1; K <= N; K++) {
             yVal = this.evaluateEquation(xVal);
-            if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-                path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
+            if (!isNaN(yVal)) {
+                if (isFinite(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+                    path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
 
-            } else if (isNaN(yVal)) {
-                yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
-                path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
-            } else {
-                if (this.evaluateEquation(xVal + .001) > 0) {
-                    path = path + " v" + -1 * (parseFloat(parseInt($('#maxY').val()) * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat(parseInt($('#maxY').val()) * this.widthy)));
+                } else if (isNaN(yVal)) {
+                    yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
+                    path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
                 } else {
-                    path = path + " v" + -1 * (parseFloat(parseInt($('#minY').val()) * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat(parseInt($('#minY').val()) * this.widthy)));
+                    if (this.evaluateEquation(xVal + .001) > 0) {
+                        path = path + " v" + -1 * (parseFloat(parseInt($('#maxY').val()) * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat(parseInt($('#maxY').val()) * this.widthy)));
+                    } else {
+                        path = path + " v" + -1 * (parseFloat(parseInt($('#minY').val()) * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat(parseInt($('#minY').val()) * this.widthy)));
+                    }
+                    console.log("asymptote in sum");
                 }
-                console.log("asymptote in sum");
+
+            } else {
+                path = "";
+                break;
             }
             xVal = xVal + ((b - a) / N);
+            
         }
         //console.log(path);
         image3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -502,24 +531,34 @@ var Graph = {
             K = parseFloat(K.toFixed(6));
 
             yVal = this.evaluateEquation(K);
-            if (isFinite(yVal)) {
-                path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-            } else if (isNaN(yVal)) {
-                yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
-                path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+            if (!isNaN(yVal)) {
+
+                if (isFinite(yVal)) {
+                    path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+                } else if (isNaN(yVal)) {
+                    yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
+                    path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+                } else {
+                    path += " V" + (Graph.xAxisPosition);
+                    console.log("asymptote in shaded region");
+                }
             } else {
-                path += " V" + (Graph.xAxisPosition);
-                console.log("asymptote in shaded region");
+                path = "";
+                console.log(yVal+ ' ' + K);
+                break;
             }
 
 
         }
-        if (isFinite(yVal)) {
-            console.log(parseFloat(yVal * this.widthy))
-            path += " v" + (parseFloat(yVal * this.widthy));
-        }
+        if (path.length > 0) {
+            if (isFinite(yVal)) {
+                // console.log(parseFloat(yVal * this.widthy))
+                path += " v" + (parseFloat(yVal * this.widthy));
+            }
 
-        path += "z";
+
+            path += "z";
+        }
         image4 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         image4.setAttribute('d', path);
         image4.setAttribute('stroke-width', '2');
@@ -603,20 +642,22 @@ var Graph = {
         var a = parseInt($('#a').val());
         var b = parseInt($('#b').val());
         var xVal = b;
-        var size = 1000;
+        var size = 350;
         var tempY = 0;
         var prevYVal = 0;
         for (var i = 0; i < size * (b - a); i++) {
-            tempY = (Graph.evaluateEquation(xVal) * (1 / size));
 
-            // Graph.integralValue += parseFloat(tempY.toFixed(6));
+            tempY = ((Graph.evaluateEquation(xVal) + Graph.evaluateEquation(xVal - (1 / size))) * .5 * (1 / size));
+            console.log(tempY)
+            // Graph.integralValue +   = parseFloat(tempY.toFixed(6));
             // xVal = xVal - (1 / size);
             if (i > 0) {
                 if (!isFinite(tempY)) {
-                    //Graph.integralValue = "diverges";
+                    Graph.integralValue = "diverges";
+                    console.log("asymptote in sum");
                     break;
                 } //else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 9999999) {
-                  else if (isNaN(tempY)) {
+                else if (isNaN(tempY)) {
                     Graph.integralValue = "diverges";
                     break;
                 } else {
@@ -633,46 +674,49 @@ var Graph = {
             }
             xVal = xVal - (1 / size);
             prevYVal = tempY;
+            // if(isNaN(tempY)){
+            //     break;
+            // }
         }
 
         tempY = 0;
         var prevYVal = 0;
         var temporary = 0;
-        xVal = a;
-        if (Graph.integralValue != "diverges") {
-            for (var i = 0; i < size * (b - a); i++) {
-                tempY = (Graph.evaluateEquation(xVal) * (1 / size));
+        // xVal = a;
+        // if (Graph.integralValue != "diverges") {
+        //     for (var i = 0; i < size * (b - a); i++) {
+        //         tempY = (Graph.evaluateEquation(xVal) * (1 / size));
 
-                // temporary += parseFloat(tempY.toFixed(6));
-                // xVal = xVal + (1 / size);
-                if (i > 0) {
-                    if (!isFinite(tempY)) {
-                        //Graph.integralValue = "diverges";
-                        break;
-                    } //else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 9999999) {
-                        else if (isNaN(tempY)) {
-                        Graph.integralValue = "diverges";
-                        break;
-                    } else {
-                        temporary += parseFloat(tempY.toFixed(6));
+        //         // temporary += parseFloat(tempY.toFixed(6));
+        //         // xVal = xVal + (1 / size);
+        //         if (i > 0) {
+        //             if (!isFinite(tempY)) {
+        //                 //Graph.integralValue = "diverges";
+        //                 break;
+        //             } //else if (Math.abs((tempY - prevYVal) / (1 / size)) >= 9999999) {
+        //                 else if (isNaN(tempY)) {
+        //                 Graph.integralValue = "diverges";
+        //                 break;
+        //             } else {
+        //                 temporary += parseFloat(tempY.toFixed(6));
 
-                    }
-                } else {
-                    if (isFinite(tempY) && !isNaN(tempY)) {
+        //             }
+        //         } else {
+        //             if (isFinite(tempY) && !isNaN(tempY)) {
 
-                        temporary += parseFloat(tempY.toFixed(6));
+        //                 temporary += parseFloat(tempY.toFixed(6));
 
-                    } else if (isNaN(tempY)) {
-                        temporary += parseFloat(Graph.evaluateEquation(xVal - (1 / (size * 100))) * (1 / size));
-                    }
-                }
-                xVal = xVal + (1 / size);
-                prevYVal = tempY;
-            }
-        }
-        console.log(Graph.integralValue + "    " + temporary);
-        if (Graph.integralValue != "diverges") {
-            Graph.integralValue = (Graph.integralValue + temporary) / 2;
+        //             } else if (isNaN(tempY)) {
+        //                 temporary += parseFloat(Graph.evaluateEquation(xVal - (1 / (size * 100))) * (1 / size));
+        //             }
+        //         }
+        //         xVal = xVal + (1 / size);
+        //         prevYVal = tempY;
+        //     }
+        // }
+       // console.log(Graph.integralValue + "    " + temporary);
+        if (Graph.integralValue != "diverges" && !isNaN(Graph.integralValue)) {
+            //Graph.integralValue = (Graph.integralValue + temporary) / 2;
 
             Graph.integralValue = parseFloat(Graph.integralValue.toFixed(3));
         }
@@ -748,7 +792,13 @@ var Graph = {
     },
 
     evaluateEquation: function(x) {
-        return parseFloat(parseFloat(math.eval(((Graph.equationToEval).replace(new RegExp("x", 'g'), "(" + x + ")")))).toFixed(3));
+        var a = math.eval(((Graph.equationToEval).replace(new RegExp("x", 'g'), "(" + x + ")")));
+        if (!isNaN(a)) {
+            return parseFloat(parseFloat(math.eval(((Graph.equationToEval).replace(new RegExp("x", 'g'), "(" + x + ")")))).toFixed(3));
+        } else {
+            return NaN
+        }
+        //return parseFloat(parseFloat(math.eval(((Graph.equationToEval).replace(new RegExp("x", 'g'), "(" + x + ")")))).toFixed(3));
     },
 
     updateAxisVals: function(direct) {
