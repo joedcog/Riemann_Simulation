@@ -78,14 +78,14 @@ section {
 #graphContainer{/*This is temporary*/
 	display:none;
 }
-#leftGraphContainer, #rightGraphContainer{
+#left, #right{
 	display:inline-block;
 	text-align:center;
 	width:49%;
 	margin-left:auto;
 	margin-right:auto;
 }
-#integralGraphContainer{
+#integral{
 	display:block;
 	text-align:center;
 	width:49%;
@@ -118,15 +118,4 @@ section {
 	display:none;
 }
 
-#numeratorPop, #denomPop, #expPop{
-	border: 1px solid black;
-	background-color:white;
-	padding:20px;
-	width: auto;
-	height: auto;
-}
 
-#numeratorPop p, #denomPop p, #expPop p{
-	text-align: center;
-	
-}
