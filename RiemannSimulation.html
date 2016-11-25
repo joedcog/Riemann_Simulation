@@ -5,10 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Riemann Sums and Integration simulation</title>
     <link rel="stylesheet" type="text/css" href="Riemann.css">
-<!--     <script type="text/javascript" src="../Shared Libraries/jquery-2.2.0.min.js"></script> -->
+    <!--     <script type="text/javascript" src="../Shared Libraries/jquery-2.2.0.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="Riemann.js"></script>
-<!--     <script type="text/javascript" async src="../Shared Libraries/MathJax-master/MathJax-master/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+    <!--     <script type="text/javascript" async src="../Shared Libraries/MathJax-master/MathJax-master/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
     <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.7.0/math.js"></script>
 </head>
@@ -208,7 +208,7 @@
     <section>
         <div id='equationList'>
         </div>
-        <div id='graphContainer'>
+        <!-- <div id='graphContainer'>
             <h2>Graph</h2>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
                 <symbol id='axisSymbol'></symbol>
@@ -218,50 +218,100 @@
                 </g>
                 <symbol id='graphContents' viewBox="0 0 500 500" width="100%" height="100%"></symbol>
             </svg>
-        </div>
-        <div id='leftGraphContainer'>
+        </div> -->
+        <div id='left'>
             <h3>Left Sum</h3>
-            <figure>
+            <!-- <figure>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
                     <symbol id='leftAxisSymbol'></symbol>
-                    <g id='axisLeft' stroke="#999999"></g>
+                    <g id='axisleft' stroke="#999999"></g>
                     <g>
-                        <use id='useLeft' xlink:href="#leftGraphContents" />
+                        <use id='useleft' xlink:href="#leftGraphContents" />
                     </g>
                     <symbol id='leftGraphContents' viewBox="0 0 500 500" width="100%" height="100%"></symbol>
                 </svg>
                 <figcaption id="leftSum"></figcaption>
-            </figure>
+            </figure> -->
         </div>
-        <div id='rightGraphContainer'>
+        <div id='right'>
             <h3>Right Sum</h3>
-            <figure>
+            <!-- <figure>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
                     <symbol id='rightAxisSymbol'></symbol>
-                    <g id='axisRight' stroke="#999999"></g>
+                    <g id='axisright' stroke="#999999"></g>
                     <g>
-                        <use id='useRight' xlink:href="#rightGraphContents" />
+                        <use id='useright' xlink:href="#rightGraphContents" />
                     </g>
                     <symbol id='rightGraphContents' viewBox="0 0 500 500" width="100%" height="100%"></symbol>
                 </svg>
                 <figcaption id="rightSum"></figcaption>
-            </figure>
+            </figure> -->
         </div>
-        <div id='integralGraphContainer'>
+        <div id='integral'>
             <h3>Integral</h3>
-            <figure>
+            <!-- <figure>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
                     <symbol id='integralAxisSymbol'></symbol>
-                    <g id='axisIntegral' stroke="#999999"></g>
+                    <g id='axisintegral' stroke="#999999"></g>
                     <g>
-                        <use id='useIntegral' xlink:href="#integralGraphContents" />
+                        <use id='useintegral' xlink:href="#integralGraphContents" />
                     </g>
                     <symbol id='integralGraphContents' viewBox="0 0 500 500" width="100%" height="100%"></symbol>
                 </svg>
-                <figcaption id="integral"></figcaption>
-                <figure>
+                <figcaption id="integralSum"></figcaption>
+                <figure> -->
         </div>
+       
     </section>
+    <script>
+    var integral = new Graph('integral', $('#equationInput').val(), 0, 2, 4, 'integral');
+    var left = new Graph('left', $('#equationInput').val(), 0, 2, 4, 'leftsum');
+    var right = new Graph('right', $('#equationInput').val(), 0, 2, 4, 'rightsum');
+    
+    integral.drawGraphAxis();
+    left.drawGraphAxis();
+    right.drawGraphAxis();
+
+    $('#graphButton').click(function() {
+        //need to create a function to validate user input
+
+        try {
+            math.parse($('#equationInput').val());
+
+
+
+            $('#leftSum').empty();
+            $('#rightSum').empty();
+            $('#integralSum').empty();
+            integral.drawGraph();
+            left.drawGraph();
+            right.drawGraph();
+            
+            $('#errorAlert').empty().addClass('noShow').removeClass('show');
+        } catch (e) {
+            //change this to be below the equation in red text
+            $('#errorAlert').empty().append("Error processing math...", "We've encountered an error when attempting to process the equation that you input.  Please confirm that the input is correct.  The following error was reported:  " + e, "error").addClass('show').removeClass('noShow');
+        }
+
+
+    });
+    $('#clearButton').click(function() {
+
+        $('#leftSum').empty();
+        $('#rightSum').empty();
+        $('#integralSum').empty();
+        integral.clearGraph();
+        left.clearGraph();
+        right.clearGraph();
+    });
+    $('#equationInput').on('input', function(e) {
+        integral.equationToEval = $('#equationInput').val();
+        left.equationToEval = $('#equationInput').val();
+        right.equationToEval = $('#equationInput').val();
+        
+        MathJax.Hub.Queue(["Text", MathJax.Hub.getAllJax(document.getElementById('equationFormatShown'))[0], 'f(x)=' + $('#equationInput').val()]);
+    });
+    </script>
 </body>
 
 </html>
