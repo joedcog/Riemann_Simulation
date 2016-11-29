@@ -293,75 +293,72 @@ var Graph = {
         var zz;
 
         //http://stackoverflow.com/questions/16139452/how-to-convert-big-negative-scientific-notation-number-into-decimal-notation-str
-        for(i = 0; i < vals.length; i++){
-        if(vals[i].indexOf('M')>-1){
-            M = true;
-            vals[i] = vals[i].replace('M',"");
-        }
-        if(vals[i].indexOf('V')>-1){
-            V = true;
-            vals[i] = vals[i].replace('V',"");
-        }
-        if(vals[i].indexOf('L')>-1){
-            L = true;
-            vals[i] = vals[i].replace('L',"");
-        }
-        if(vals[i].indexOf('m')>-1){
-            m = true;
-            vals[i] = vals[i].replace('m',"");
-        }
-        if(vals[i].indexOf('l')>-1){
-            l = true;
-            vals[i] = vals[i].replace('l',"");
-        }
-        if(vals[i].indexOf('v')>-1){
-            v = true;
-            vals[i] = vals[i].replace('v',"");
-        }
-        if(vals[i].indexOf('z')>-1){
-            zz = true;
-            vals[i] = vals[i].replace('z',"");
-        }
-        //console.log(vals[i]);
-        var data = String(vals[i]).split(/[eE]/);
-            if (data.length == 1){
+        for (i = 0; i < vals.length; i++) {
+            if (vals[i].indexOf('M') > -1) {
+                M = true;
+                vals[i] = vals[i].replace('M', "");
+            }
+            if (vals[i].indexOf('V') > -1) {
+                V = true;
+                vals[i] = vals[i].replace('V', "");
+            }
+            if (vals[i].indexOf('L') > -1) {
+                L = true;
+                vals[i] = vals[i].replace('L', "");
+            }
+            if (vals[i].indexOf('m') > -1) {
+                m = true;
+                vals[i] = vals[i].replace('m', "");
+            }
+            if (vals[i].indexOf('l') > -1) {
+                l = true;
+                vals[i] = vals[i].replace('l', "");
+            }
+            if (vals[i].indexOf('v') > -1) {
+                v = true;
+                vals[i] = vals[i].replace('v', "");
+            }
+            if (vals[i].indexOf('z') > -1) {
+                zz = true;
+                vals[i] = vals[i].replace('z', "");
+            }
+            //console.log(vals[i]);
+            var data = String(vals[i]).split(/[eE]/);
+            if (data.length == 1) {
                 vals[i] = '';
-                if(M){
+                if (M) {
                     M = false;
                     vals[i] = "M";
                 }
-                if(V){
+                if (V) {
                     V = false;
                     vals[i] = "V";
                 }
-                if(L){
+                if (L) {
                     L = false;
                     vals[i] = "L";
                 }
-                if(m){
+                if (m) {
                     m = false;
                     vals[i] = "m";
                 }
-                if(v){
+                if (v) {
                     v = false;
                     vals[i] = "v";
                 }
-                if(l){
+                if (l) {
                     l = false;
                     vals[i] = "l";
                 }
-                if(zz){
-                    //zz = false;
-                    vals[i] = "";
-                }
+
 
                 vals[i] += data[0];
-                if(zz){
+                if (zz) {
                     zz = false;
                     vals[i] += "z";
                 }
                 continue;
-            } 
+            }
 
             var z = '',
                 sign = this < 0 ? '-' : '',
@@ -371,86 +368,103 @@ var Graph = {
             if (mag < 0) {
                 z = sign + '0.';
                 while (mag++) z += '0';
-                if(M){
+                if (M) {
                     M = false;
                     vals[i] = "M";
                 }
-                if(V){
+                if (V) {
                     V = false;
                     vals[i] = "V";
                 }
-                if(L){
+                if (L) {
                     L = false;
                     vals[i] = "L";
                 }
-                if(m){
+                if (m) {
                     m = false;
                     vals[i] = "m";
                 }
-                if(v){
+                if (v) {
                     v = false;
                     vals[i] = "v";
                 }
-                if(l){
+                if (l) {
                     l = false;
                     vals[i] = "l";
                 }
-                if(zz){
-                    //zz = false;
-                    vals[i] = "";
-                }
-            
+
+
                 vals[i] += z + str.replace(/^\-/, '');
 
-                if(zz){
+                if (zz) {
                     zz = false;
                     vals[i] += "z";
                 }
-            //console.log(vals[i]);
+                //console.log(vals[i]);
                 continue;
             }
             mag -= str.length;
             while (mag--) z += '0';
             vals[i] = "";
-            if(M){
+            if (M) {
                 M = false;
                 vals[i] = "M";
             }
-            if(V){
+            if (V) {
                 V = false;
                 vals[i] = "V";
             }
-            if(L){
+            if (L) {
                 L = false;
                 vals[i] = "L";
             }
-            if(m){
+            if (m) {
                 m = false;
                 vals[i] = "m";
             }
-            if(v){
+            if (v) {
                 v = false;
                 vals[i] = "v";
             }
-            if(l){
+            if (l) {
                 l = false;
                 vals[i] = "l";
             }
-            if(zz){
-                //zz = false;
-                vals[i] = "";
-            }
+
 
             vals[i] += str + z;
-            if(zz){
+            if (zz) {
                 zz = false;
                 vals[i] += "z";
             }
             //console.log(vals[i]);
         }
         var string = '';
-        for(i = 0; i<vals.length; i++){
-            string += vals[i].substring(0,20) +" ";
+        for (i = 0; i < vals.length; i++) {
+            if(vals[i].length >8){
+            if (vals[i].indexOf('z') > -1) {
+                if(vals[i].charAt(7)=='.'){
+                    var ant = "v"+(parseFloat(vals[i].substring(1, 9).replace('.','')) + 250) + "z ";
+                    console.log(ant);
+                    string += ant;
+                }
+                else{
+                    var ant = "v"+(parseFloat(vals[i].substring(1, 9))+250) + "z ";
+                    console.log(ant);
+                    string += ant;
+                }
+            }
+            else{
+                if(vals[i].charAt(7)=='.'){
+                    string += vals[i].substring(0, 8).replace('.','') + " ";
+                }
+                else{
+                    string += vals[i].substring(0, 8) + " ";
+                }
+            }}
+            else{
+                string += vals[i].substring(0, 8) + " ";
+            }
         }
         //console.log(string);
         return string
@@ -619,6 +633,7 @@ var Graph = {
 
         }
         //console.log(path);
+        path = Graph.convertSciPath(path);
         image2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         image2.setAttribute('d', path);
         image2.setAttribute('stroke-width', '2');
@@ -658,6 +673,7 @@ var Graph = {
 
         }
         //console.log(path);
+        path = Graph.convertSciPath(path);
         image3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         image3.setAttribute('d', path);
         image3.setAttribute('stroke-width', '2');
@@ -673,19 +689,25 @@ var Graph = {
 
         xVal = a;
         var highup = 0;
-        path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
+        path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition + " ";
         for (var K = xVal; K <= b; K += (1 / this.resolution)) {
             K = parseFloat(K.toFixed(6));
 
             yVal = this.evaluateEquation(K);
             if (!isNaN(yVal)) {
 
-                if (isFinite(yVal)) {
+                if (isFinite(yVal)&& yVal <= parseInt($('#maxY').val())*10 && yVal >= parseInt($('#minY').val())*10) {
                     path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
                 } else if (isNaN(yVal)) {
                     yVal = this.evaluateEquation(K + (1 / (this.resolution * 100)));
                     path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-                } else {
+                } else if(isFinite(yVal)){
+                    if(yVal > parseInt($('#maxY').val())){ 
+                        path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(parseInt($('#maxY').val())*10 * this.widthy)) + " ";
+                    } else{
+                        path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(parseInt($('#minY').val())*10 * this.widthy)) + " ";
+                    }
+                }else {
                     path += " V" + (Graph.xAxisPosition);
                     console.log("asymptote in shaded region");
                 }
@@ -698,14 +720,21 @@ var Graph = {
 
         }
         if (path.length > 0) {
-            if (isFinite(yVal)) {
+            if (isFinite(yVal)&& yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
                 // console.log(parseFloat(yVal * this.widthy))
                 path += " v" + (parseFloat(yVal * this.widthy));
+            } else{
+                if(yVal > parseInt($('#maxY').val())){
+                    path += " v" + (parseFloat(parseInt($('#maxY').val())*10 * this.widthy));
+                } else{
+                    path += " v" + (parseFloat(parseInt($('#minY').val())*10 * this.widthy));
+                }
             }
 
 
             path += "z";
         }
+        //path = Graph.convertSciPath(path);
         image4 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         image4.setAttribute('d', path);
         image4.setAttribute('stroke-width', '2');
@@ -886,7 +915,7 @@ var Graph = {
             //console.log(i);
             if (tempY <= upper) {
                 //console.log(i + " " + tempY);
-                
+
                 return "M" + (Graph.yAxisPosition + parseFloat((i) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(tempY * this.widthy)) + " ";
 
             }
@@ -971,3 +1000,4 @@ var Graph = {
 $(document).ready(function() {
     Graph.init();
 });
+
