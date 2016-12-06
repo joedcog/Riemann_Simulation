@@ -20,6 +20,24 @@
 body {
     width: 100%;
 }
+/*#popup{
+    z-index: 1;
+    
+    display:block;
+    position: fixed;
+    margin: auto;
+    background: white;
+    border: 2px solid red;
+    bottom: 50%;
+    
+    text-align: center;
+}
+#popup.none{
+    display:none;
+}*/
+
+
+
 
 
 /*End For Mobile*/
