@@ -13,16 +13,17 @@ var Graph = {
   rightSumValue: 0,
   integralValue: 0,
 
-  // togglepop: function(callback){
-  //   var wide = $(window).width();
-  //   $('#popup').css('left','30%');
-  //   $('#popup').css('width',wide*.4);
-  //   $('#popup #message').empty();
-  //   $('#popup').toggleClass("none");
-  //   setTimeout(function(){
-  //       callback();
-  //   },200);
-  // },
+  togglepop: function(callback) {
+    var wide = $(window).width();
+    $('#popup').css('left', '30%');
+    $('#popup').css('width', wide * .4);
+    $('#popup #message').empty();
+    $('#popup #stage').empty().append('Setting things up');
+    $('#popup').toggleClass("none");
+    setTimeout(function() {
+      callback();
+    }, 200);
+  },
 
   init: function() {
 
@@ -30,31 +31,32 @@ var Graph = {
     $('#graphButton').click(function() {
       //need to create a function to validate user input
 
-      //Graph.togglepop(function(){
-      try {
-        math.parse(Graph.equationToEval);
-
+      Graph.togglepop(function() {
         try {
+          math.parse(Graph.equationToEval);
 
-          Graph.checkInputs();
-          Graph.clearGraph();
-          Graph.drawGraphAxis();
-          $('#leftSum').empty();
-          $('#rightSum').empty();
-          $('#integral').empty();
-          $('#equationList').empty();
-          Graph.createEquation();
-          Graph.drawGraph();
-          $('#errorAlert').empty().addClass('noShow').removeClass('show');
+          try {
+
+            Graph.checkInputs();
+            Graph.clearGraph();
+            Graph.drawGraphAxis();
+            $('#leftSum').empty();
+            $('#rightSum').empty();
+            $('#integral').empty();
+            $('#equationList').empty();
+            Graph.createEquation();
+            Graph.drawGraph();
+            $('#errorAlert').empty().addClass('noShow').removeClass('show');
+          } catch (e) {
+            //change this to be below the equation in red text
+            $('#popup').toggleClass("none");
+            $('#errorAlert').empty().append(e).addClass('show').removeClass('noShow');
+          }
         } catch (e) {
-          //change this to be below the equation in red text
-          $('#errorAlert').empty().append(e).addClass('show').removeClass('noShow');
+          $('#popup').toggleClass("none");
+          $('#errorAlert').empty().append("Error processing math...  ", "We've encountered an error when attempting to process the equation that you input.  Please confirm that the input is correct.  The following error was reported:  " + e).addClass('show').removeClass('noShow');
         }
-      } catch (e) {
-        $('#errorAlert').empty().append("Error processing math...  ", "We've encountered an error when attempting to process the equation that you input.  Please confirm that the input is correct.  The following error was reported:  " + e).addClass('show').removeClass('noShow');
-      } finally {
-        //$('#popup').toggleClass("none");
-      } //});
+      });
 
 
 
@@ -345,380 +347,479 @@ var Graph = {
 
   drawGraph: function() {
 
-    var svgWidth = 500;
-    var svgHeight = 500;
-    var stopDraw = false;
-    var high = false;
-    var infinity = false;
-    var low = false;
-    var prevXVal = "";
-    var prevYVal = "";
-    var nully = false;
+    // var svgWidth = 500;
+    // var svgHeight = 500;
+    // var stopDraw = false;
+    // var high = false;
+    // var infinity = false;
+    // var low = false;
+    // var prevXVal = "";
+    // var prevYVal = "";
+    // var nully = false;
 
-    //this.resolution = parseInt($('#resolution').val());
-    // this.resolution = 50;
+    // //this.resolution = parseInt($('#resolution').val());
+    // // this.resolution = 50;
+    // var graphContent = document.getElementById('graphContents');
+    // var graphContentLeft = document.getElementById('leftGraphContents');
+    // var graphContentIntegral = document.getElementById('integralGraphContents');
+    // var graphContentRight = document.getElementById('rightGraphContents');
+
+    // var xVal = parseInt($('#minX').val()); //need object variable to keep up with xVal showing in graph
+
+    // var yVal = this.evaluateEquation(xVal);
+    // ////console.log(yVal);
+    // var prevY = null;
+    // this.widthx = 460 / Math.abs(parseInt($('#minX').val()) - parseInt($('#maxX').val()));
+    // this.resolution = this.widthx;
+    // Graph.yAxisPosition = 20 + (-1 * this.widthx * (parseInt($('#minX').val())));
+    // this.widthy = 460 / Math.abs(parseInt($('#minY').val()) - parseInt($('#maxY').val()));
+    // Graph.xAxisPosition = 20 + (this.widthy * (parseInt($('#maxY').val())));
+
+    // if (isFinite(yVal) && !isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+    //   var path = "M20 " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    // } else {
+    //   var path = "";
+    //   if (yVal >= parseInt($('#maxY').val())) {
+    //     high = true;
+    //   } else if (yVal <= parseInt($('#minY').val())) {
+    //     low = true;
+    //   } else {
+    //     nully = true;
+    //   }
+    // }
+
+    // for (var i = (20); i < (svgWidth - 20); i += this.widthx) {
+    //   for (var j = 1; j <= this.resolution; j++) {
+    //     var image = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+    //     yVal = this.evaluateEquation(xVal + (j / this.resolution));
+
+
+    //     if (!isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+    //       if (nully) {
+    //         nully = false;
+    //         if (!isNaN(prevY) && isFinite(prevY)) {
+    //           ////console.log("enter");
+    //           path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
+
+    //         } else {
+    //           // if (!isFinite(prevY)) {
+    //           //   if (prevY > 0) {
+    //           //     path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(($('#maxY').val()+2000) * this.widthy)) + " ";
+    //           //   } else {
+    //           //     path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(($('#minY').val()-2000) * this.widthy)) + " ";
+    //           //   }
+    //           // } else {
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //           //}
+    //         }
+    //         //console.log(path);
+    //       }
+
+    //       if ((yVal <= parseInt($('#maxY').val())) && (yVal >= parseInt($('#minY').val())) && (isFinite(yVal)) && !(isNaN(yVal))) {
+    //         if (infinity) {
+
+    //           infinity = false;
+    //           if (prevYVal > 0) {
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
+    //             ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
+    //           } else {
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
+    //             ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
+    //           }
+    //         }
+    //         if (high) {
+    //           high = false;
+    //           //path += Graph.backToBelowUpper((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+    //           if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
+    //             tempMax = Math.abs($('#maxY').val());
+    //           } else {
+    //             tempMax = Math.abs($('#minY').val());
+    //           }
+    //           if (Math.abs(prevY) <= tempMax + 2000) {
+    //             //use proportion to find appropriate x value for the corresonding max or min y value being crossed
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
+    //           } else {
+    //             if (prevY > parseInt($('#maxY').val())) {
+    //               path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //             } else {
+    //               path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //             }
+    //           }
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+
+    //         }
+    //         if (low) {
+    //           low = false;
+    //           //path += Graph.backToAboveLower((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+    //           if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
+    //             tempMax = Math.abs($('#maxY').val());
+    //           } else {
+    //             tempMax = Math.abs($('#minY').val());
+    //           }
+    //           if (Math.abs(prevY) <= tempMax + 2000) {
+    //             //use proportion to find appropriate x value for the corresonding max or min y value being crossed
+
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
+    //           } else {
+    //             if (prevY > parseInt($('#maxY').val())) {
+    //               path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //             } else {
+    //               path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //             }
+    //           }
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //         }
+    //         if (infinity) {
+
+    //           infinity = false;
+    //           if (prevYVal > 0) {
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
+    //             ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
+    //           } else {
+    //             path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
+    //             ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
+    //           }
+    //         }
+    //         if (!high && !low && !infinity) {
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //         }
+    //       } else {
+    //         if (isNaN(yVal)) {
+
+    //         } else if (yVal > parseInt($('#maxY').val()) && isFinite(yVal) && !high) {
+    //           high = true;
+    //           path += Graph.outsideUpperRange((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+    //         } else if (yVal < parseInt($('#minY').val()) && isFinite(yVal) && !low) {
+    //           path += Graph.outsideLowerRange((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
+    //           low = true;
+    //         } else if (!isFinite(yVal)) {
+    //           ////console.log("entered inf");
+
+    //           infinity = true;
+    //         }
+
+    //       }
+
+
+    //       prevY = yVal;
+    //     } else if (prevY != null && prevY <= parseInt($('#maxY').val()) && prevY >= parseInt($('#minY').val()) && !isNaN(yVal)) {
+    //       //console.log(yVal);
+    //       if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
+    //         tempMax = Math.abs($('#maxY').val());
+    //       } else {
+    //         tempMax = Math.abs($('#minY').val());
+    //       }
+    //       if (Math.abs(yVal) <= tempMax + 2000) {
+    //         path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //       } else {
+    //         if (yVal > parseInt($('#maxY').val())) {
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //         } else {
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //         }
+    //       }
+    //       prevY = yVal;
+
+    //     } else if (prevY != null && prevY >= parseInt($('#maxY').val()) && yVal <= parseInt($('#minY').val())) {
+    //       ////console.log(yVal);
+    //       if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
+    //         tempMax = Math.abs($('#maxY').val());
+    //       } else {
+    //         tempMax = Math.abs($('#minY').val());
+    //       }
+    //       if (Math.abs(yVal) <= tempMax + 2000 && Math.abs(prevYVal) <= tempMax + 2000) {
+    //         path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
+    //         path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //       } else {
+    //         if (yVal > parseInt($('#maxY').val())) {
+    //           path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //         } else {
+    //           path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //         }
+    //       }
+    //       prevY = yVal;
+
+    //     } else if (prevY != null && yVal >= parseInt($('#maxY').val()) && prevY <= parseInt($('#minY').val())) {
+    //       ////console.log(yVal);
+    //       if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
+    //         tempMax = Math.abs($('#maxY').val());
+    //       } else {
+    //         tempMax = Math.abs($('#minY').val());
+    //       }
+    //       if (Math.abs(yVal) <= tempMax + 2000 && Math.abs(prevYVal) <= tempMax + 2000) {
+    //         path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
+    //         path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //       } else {
+    //         if (yVal > parseInt($('#maxY').val())) {
+    //           path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
+    //         } else {
+    //           path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //           path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
+    //         }
+    //       }
+    //       prevY = yVal;
+
+    //     } else {
+    //       if (isNaN(yVal)) {
+    //         nully = true;
+    //       }
+    //       prevY = yVal;
+    //     }
+    //   }
+    //   xVal++;
+    //   ////console.log(xVal);
+    // }
+    // ////console.log(path);
+    // ////console.log(path);
+    // //path = Graph.convertSciPath(path);
+    // ////console.log(path);
+    // image.setAttribute('d', path);
+    // image.setAttribute('stroke-width', '2');
+    // image.setAttribute('stroke', 'red');
+    // image.setAttribute('fill-opacity', 0);
+    // image.setAttribute('vector-effect', 'non-scaling-stroke');
     var graphContent = document.getElementById('graphContents');
     var graphContentLeft = document.getElementById('leftGraphContents');
     var graphContentIntegral = document.getElementById('integralGraphContents');
     var graphContentRight = document.getElementById('rightGraphContents');
-
-    var xVal = parseInt($('#minX').val()); //need object variable to keep up with xVal showing in graph
-
-    var yVal = this.evaluateEquation(xVal);
-    ////console.log(yVal);
-    var prevY = null;
-    this.widthx = 460 / Math.abs(parseInt($('#minX').val()) - parseInt($('#maxX').val()));
-    this.resolution = this.widthx;
-    Graph.yAxisPosition = 20 + (-1 * this.widthx * (parseInt($('#minX').val())));
-    this.widthy = 460 / Math.abs(parseInt($('#minY').val()) - parseInt($('#maxY').val()));
-    Graph.xAxisPosition = 20 + (this.widthy * (parseInt($('#maxY').val())));
-
-    if (isFinite(yVal) && !isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-      var path = "M20 " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-    } else {
-      var path = "";
-      if (yVal >= parseInt($('#maxY').val())) {
-        high = true;
-      } else if (yVal <= parseInt($('#minY').val())) {
-        low = true;
-      } else {
-        nully = true;
-      }
-    }
-
-    for (var i = (20); i < (svgWidth - 20); i += this.widthx) {
-      for (var j = 1; j <= this.resolution; j++) {
-        var image = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        
-        yVal = this.evaluateEquation(xVal + (j / this.resolution));
-
-
-        if (!isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-          if (nully) {
-            nully = false;
-            if (!isNaN(prevY) && isFinite(prevY)) {
-              ////console.log("enter");
-              path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
-
-            } else {
-              // if (!isFinite(prevY)) {
-              //   if (prevY > 0) {
-              //     path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(($('#maxY').val()+2000) * this.widthy)) + " ";
-              //   } else {
-              //     path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(($('#minY').val()-2000) * this.widthy)) + " ";
-              //   }
-              // } else {
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-              //}
-            }
-            //console.log(path);
-          }
-
-          if ((yVal <= parseInt($('#maxY').val())) && (yVal >= parseInt($('#minY').val())) && (isFinite(yVal)) && !(isNaN(yVal))) {
-            if (infinity) {
-
-              infinity = false;
-              if (prevYVal > 0) {
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
-                ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
-              } else {
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
-                ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
-              }
-            }
-            if (high) {
-              high = false;
-              //path += Graph.backToBelowUpper((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-              if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
-                tempMax = Math.abs($('#maxY').val());
-              } else {
-                tempMax = Math.abs($('#minY').val());
-              }
-              if (Math.abs(prevY) <= tempMax + 2000) {
-                //use proportion to find appropriate x value for the corresonding max or min y value being crossed
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
-              } else {
-                if (prevY > parseInt($('#maxY').val())) {
-                  path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-                } else {
-                  path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-                }
-              }
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-
-            }
-            if (low) {
-              low = false;
-              //path += Graph.backToAboveLower((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-              if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
-                tempMax = Math.abs($('#maxY').val());
-              } else {
-                tempMax = Math.abs($('#minY').val());
-              }
-              if (Math.abs(prevY) <= tempMax + 2000) {
-                //use proportion to find appropriate x value for the corresonding max or min y value being crossed
-
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
-              } else {
-                if (prevY > parseInt($('#maxY').val())) {
-                  path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-                } else {
-                  path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-                }
-              }
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-            }
-            if (infinity) {
-
-              infinity = false;
-              if (prevYVal > 0) {
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ";
-                ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#maxY').val()) * this.widthy) + " ");
-              } else {
-                path += "M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ";
-                ////console.log("M" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + parseFloat(parseInt($('#minY').val()) * this.widthy) + " ");
-              }
-            }
-            if (!high && !low && !infinity) {
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-            }
-          } else {
-            if (isNaN(yVal)) {
-
-            } else if (yVal > parseInt($('#maxY').val()) && isFinite(yVal) && !high) {
-              high = true;
-              path += Graph.outsideUpperRange((parseInt($('#maxY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-            } else if (yVal < parseInt($('#minY').val()) && isFinite(yVal) && !low) {
-              path += Graph.outsideLowerRange((parseInt($('#minY').val())), (xVal + (j / this.resolution)), ((1 / this.resolution) / 100));
-              low = true;
-            } else if (!isFinite(yVal)) {
-              ////console.log("entered inf");
-
-              infinity = true;
-            }
-
-          }
-
-
-          prevY = yVal;
-        } else if (prevY != null && prevY <= parseInt($('#maxY').val()) && prevY >= parseInt($('#minY').val()) && !isNaN(yVal)) {
-          //console.log(yVal);
-          if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
-            tempMax = Math.abs($('#maxY').val());
-          } else {
-            tempMax = Math.abs($('#minY').val());
-          }
-          if (Math.abs(yVal) <= tempMax + 2000) {
-            path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-          } else {
-            if (yVal > parseInt($('#maxY').val())) {
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-            } else {
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-            }
-          }
-          prevY = yVal;
-
-        } else if (prevY != null && prevY >= parseInt($('#maxY').val()) && yVal <= parseInt($('#minY').val())) {
-          ////console.log(yVal);
-          if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
-            tempMax = Math.abs($('#maxY').val());
-          } else {
-            tempMax = Math.abs($('#minY').val());
-          }
-          if (Math.abs(yVal) <= tempMax + 2000 && Math.abs(prevYVal) <= tempMax + 2000) {
-            path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
-            path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-          } else {
-            if (yVal > parseInt($('#maxY').val())) {
-              path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-            } else {
-              path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-            }
-          }
-          prevY = yVal;
-
-        } else if (prevY != null && yVal >= parseInt($('#maxY').val()) && prevY <= parseInt($('#minY').val())) {
-          ////console.log(yVal);
-          if (Math.abs($('#maxY').val()) >= Math.abs($('#minY').val())) {
-            tempMax = Math.abs($('#maxY').val());
-          } else {
-            tempMax = Math.abs($('#minY').val());
-          }
-          if (Math.abs(yVal) <= tempMax + 2000 && Math.abs(prevYVal) <= tempMax + 2000) {
-            path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(prevY * this.widthy)) + " ";
-            path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-          } else {
-            if (yVal > parseInt($('#maxY').val())) {
-              path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy)) + " ";
-            } else {
-              path += "M" + (Graph.yAxisPosition + parseFloat((xVal + ((j - 1) / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-              path += "L" + (Graph.yAxisPosition + parseFloat((xVal + (j / this.resolution)) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy)) + " ";
-            }
-          }
-          prevY = yVal;
-
+    var worker = new Worker('GraphWorker.js');
+    worker.addEventListener('message', function(e) {
+      if (e.data.error) {
+        $('#popup #message').empty().append(e.data.error);
+      } else if(e.data.msg){
+            $('#popup #stage').empty().append(e.data.msg);
         } else {
-          if (isNaN(yVal)) {
-            nully = true;
-          }
-          prevY = yVal;
-        }
-      }
-      xVal++;
-      ////console.log(xVal);
-    }
-    ////console.log(path);
-    ////console.log(path);
-    //path = Graph.convertSciPath(path);
-    ////console.log(path);
-    image.setAttribute('d', path);
-    image.setAttribute('stroke-width', '2');
-    image.setAttribute('stroke', 'red');
-    image.setAttribute('fill-opacity', 0);
-    image.setAttribute('vector-effect', 'non-scaling-stroke');
-    var imageLeft = image.cloneNode(true);
-    var imageRight = image.cloneNode(true);
-    var imageIntegral = image.cloneNode(true);
+        
 
-    graphContent.appendChild(image);
-    graphContentLeft.appendChild(imageLeft);
-    graphContentIntegral.appendChild(imageIntegral);
-    graphContentRight.appendChild(imageRight);
+        var image = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        image.setAttribute('d', e.data.Main);
+        image.setAttribute('stroke-width', '2');
+        image.setAttribute('stroke', 'red');
+        image.setAttribute('fill-opacity', 0);
+        image.setAttribute('vector-effect', 'non-scaling-stroke');
+        var imageLeft = image.cloneNode(true);
+        var imageRight = image.cloneNode(true);
+        var imageIntegral = image.cloneNode(true);
+        graphContent.appendChild(image);
+        graphContentLeft.appendChild(imageLeft);
+        graphContentIntegral.appendChild(imageIntegral);
+        graphContentRight.appendChild(imageRight);
+        image2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        image2.setAttribute('d', e.data.rect1);
+        image2.setAttribute('stroke-width', '2');
+        image2.setAttribute('stroke', 'blue');
+        image2.setAttribute('fill-opacity', 0);
+        image2.setAttribute('vector-effect', 'non-scaling-stroke');
+        image2Right = image2.cloneNode(true);
+        graphContent.appendChild(image2);
+        graphContentRight.appendChild(image2Right);
+        image3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        image3.setAttribute('d', e.data.rect2);
+        image3.setAttribute('stroke-width', '2');
+        image3.setAttribute('stroke', 'Green');
+        image3.setAttribute('fill-opacity', 0);
+        image3.setAttribute('vector-effect', 'non-scaling-stroke');
+
+        image3Left = image3.cloneNode(true);
+
+        graphContent.appendChild(image3);
+        graphContentLeft.appendChild(image3Left);
+        image4 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        image4.setAttribute('d', e.data.shade);
+        image4.setAttribute('stroke-width', '2');
+        image4.setAttribute('stroke', 'black');
+        image4.setAttribute('fill-opacity', 0.5);
+        image4.setAttribute('fill', '#999');
+        image4.setAttribute('vector-effect', 'non-scaling-stroke');
+
+        graphContentIntegral.appendChild(image4);
+        
+        worker.terminate();
+        Graph.summations();
+      }
+    });
+    worker.postMessage({ 'equationToEval': Graph.equationToEval, 'tinyX': $("#minX").val(), 'largeX': $("#maxX").val(), 'tinyY': $("#minY").val(), 'largeY': $("#maxY").val(), 'N': parseInt($('#rectangles').val()), 'a': parseInt($('#a').val()), 'b': parseInt($('#b').val()) });
+
     //draw rectangles
 
+    // var N = parseInt($('#rectangles').val());
+    // var a = parseInt($('#a').val());
+    // var b = parseInt($('#b').val());
+    // ////console.log(N + " " + a + " " + b);
+    // xVal = b;
+    // path = "M" + (20 + this.widthx * (b - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
+    // for (var K = 1; K <= N; K++) {
+
+    //   yVal = this.evaluateEquation(xVal);
+    //   if (isFinite(yVal) && !isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+    //     path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
+    //   } else {
+    //     if (isNaN(yVal)) {
+    //       path = "";
+    //       break;
+    //     }
+    //     if (yVal > parseInt($('#maxY').val())) {
+    //       path = path + " v" + -1 * (parseFloat($('#maxY').val() * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat($('#maxY').val() * this.widthy)));
+    //     } else {
+    //       path = path + " v" + -1 * (parseFloat($('#minY').val() * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat($('#minY').val() * this.widthy)));
+    //     }
+    //   }
+    //   xVal = xVal - ((b - a) / N);
+
+    // }
+    ////console.log(path);
+    // image2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // image2.setAttribute('d', path);
+    // image2.setAttribute('stroke-width', '2');
+    // image2.setAttribute('stroke', 'blue');
+    // image2.setAttribute('fill-opacity', 0);
+    // image2.setAttribute('vector-effect', 'non-scaling-stroke');
+
+    // image2Right = image2.cloneNode(true);
+
+    // graphContent.appendChild(image2);
+    // graphContentRight.appendChild(image2Right);
+    // xVal = a;
+    // path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
+    // for (var K = 1; K <= N; K++) {
+
+    //   yVal = this.evaluateEquation(xVal);
+    //   if (isFinite(yVal) && !isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+    //     path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
+    //   } else {
+    //     if (isNaN(yVal)) {
+    //       path = "";
+    //       break;
+    //     }
+    //     if (yVal > parseInt($('#maxY').val())) {
+    //       path = path + " v" + -1 * (parseFloat($('#maxY').val() * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat($('#maxY').val() * this.widthy)));
+    //     } else {
+    //       path = path + " v" + -1 * (parseFloat($('#minY').val() * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat($('#minY').val() * this.widthy)));
+    //     }
+
+    //   }
+    //   xVal = xVal + ((b - a) / N);
+
+    // }
+    ////console.log(path);
+    // image3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // image3.setAttribute('d', path);
+    // image3.setAttribute('stroke-width', '2');
+    // image3.setAttribute('stroke', 'Green');
+    // image3.setAttribute('fill-opacity', 0);
+    // image3.setAttribute('vector-effect', 'non-scaling-stroke');
+
+    // image3Left = image3.cloneNode(true);
+
+    // graphContent.appendChild(image3);
+    // graphContentLeft.appendChild(image3Left);
+    //shade
+
+    // xVal = a;
+    // var highup = 0;
+    // path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
+    // for (var K = xVal; K <= b; K += (1 / this.resolution)) {
+    //   K = parseFloat(K.toFixed(6));
+
+    //   yVal = this.evaluateEquation(K);
+    //   if (!isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
+
+    //     if (isFinite(yVal)) {
+    //       path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
+    //     } else {
+    //       path += " V" + (Graph.xAxisPosition);
+    //       //console.log("asymptote in shaded region");
+    //     }
+    //   } else {
+    //     if (isNaN(yVal)) {
+    //       path = "";
+    //       //console.log(yVal + ' ' + K);
+    //       break;
+    //     }
+    //     if (yVal > parseInt($('#maxY').val())) {
+    //       path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy + 30)) + " ";
+    //     } else {
+    //       path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy - 30)) + " ";
+    //     }
+    //   }
+
+
+    // }
+    // if (path.length > 0) {
+    //   //if (isFinite(yVal)) {
+    //   // //console.log(parseFloat(yVal * this.widthy))
+    //   path += "L" + (Graph.yAxisPosition + parseFloat(b * (this.widthx))) + " " + (Graph.xAxisPosition) + " ";
+    //   //}
+
+
+    //   path += "z";
+    // }
+    // image4 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // image4.setAttribute('d', path);
+    // image4.setAttribute('stroke-width', '2');
+    // image4.setAttribute('stroke', 'black');
+    // image4.setAttribute('fill-opacity', 0.5);
+    // image4.setAttribute('fill', '#999');
+    // image4.setAttribute('vector-effect', 'non-scaling-stroke');
+
+    // graphContentIntegral.appendChild(image4);
+    // Graph.leftSumValue = 0;
+    // Graph.rightSumValue = 0;
+    // Graph.integralValue = 0;
+    // Graph.leftSum();
+    // Graph.rightSum();
+    // Graph.integral();
+    
+
+  },
+  summations: function() {
     var N = parseInt($('#rectangles').val());
     var a = parseInt($('#a').val());
     var b = parseInt($('#b').val());
-    ////console.log(N + " " + a + " " + b);
-    xVal = b;
-    path = "M" + (20 + this.widthx * (b - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
-    for (var K = 1; K <= N; K++) {
+    var sumWork = new Worker("SummationWorker.js");
+    sumWork.addEventListener('message', function(e) {
+        if(e.data.msg){
+            $('#popup #stage').empty().append(e.data.msg);
+        } else{
+      Graph.rightSumValue = e.data.Right;
+      MathJax.Hub.Queue(function() {
+        if (Graph.rightSumValue != "diverges") {
+          var rightSum = "<math><mstyle displaystyle='true'><msub><mi>R</mi><mi>n</mi></msub><mo>=</mo><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mn>" + N + "</mi></munderover><mrow><mi>f</mi><mo></mo><mrow><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></mrow><mrow><mo>(</mo><mn>" + (b - a) / N + "</mn><mo>)</mo></mrow></mstyle><mo>=</mo>";
+          $('#rightSum').empty().append(rightSum + "<mn>" + Graph.rightSumValue + "</mn></mrow></math>" + "<br><span>where </span><math><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mn>" + a + "</mn><mo>+</mo><mi>i</mi><mrow><mo>(</mo><mn>" + (b - a) / N + "</mn><mo>)</mo></mrow></math>");
+        } else {
+          $('#rightSum').empty().append("Right Sum diverges");
+        }
+      });
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
       
-      yVal = this.evaluateEquation(xVal);
-      if (isFinite(yVal) && !isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-        path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (-1 * (((this.widthx * ((b - a) / N))))) + " v" + ((parseFloat(yVal * this.widthy)));
-      } else {
-        if (isNaN(yVal)) {
-          path = "";
-          break;
-        }
-        if (yVal > parseInt($('#maxY').val())) {
-          path = path + " v" + -1 * (parseFloat($('#maxY').val() * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat($('#maxY').val() * this.widthy)));
+      Graph.leftSumValue = e.data.Left;
+      MathJax.Hub.Queue(function() {
+        if (Graph.leftSumValue != "diverges") {
+          var leftSum = "<math><mstyle displaystyle='true'><msub><mi>L</mi><mi>n</mi></msub><mo>=</mo><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mn>" + N + "</mn></munderover><mrow><mi>f</mi><mo></mo><mrow><mo>(</mo><msub><mi>x</mi><mrow><mi>i</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msub><mo>)</mo></mrow><mrow><mo>(</mo><mn>" + (b - a) / N + "</mn><mo>)</mo></mrow></mstyle><mo>=</mo>";
+          $('#leftSum').empty().append(leftSum + "<mn>" + Graph.leftSumValue + "</mn></mrow></math>" + "<br><span>where </span><math><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mn>" + a + "</mn><mo>+</mo><mi>i</mi><mrow><mo>(</mo><mn>" + (b - a) / N + "</mn><mo>)</mo></mrow></math>");
         } else {
-          path = path + " v" + -1 * (parseFloat($('#minY').val() * this.widthy)) + " m" + (-1 * (((this.widthx * ((b - a) / N))))) + " 0 v" + ((parseFloat($('#minY').val() * this.widthy)));
+          $('#leftSum').empty().append("Left Sum diverges");
         }
-      }
-      xVal = xVal - ((b - a) / N);
-
-    }
-    ////console.log(path);
-    image2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    image2.setAttribute('d', path);
-    image2.setAttribute('stroke-width', '2');
-    image2.setAttribute('stroke', 'blue');
-    image2.setAttribute('fill-opacity', 0);
-    image2.setAttribute('vector-effect', 'non-scaling-stroke');
-
-    image2Right = image2.cloneNode(true);
-
-    graphContent.appendChild(image2);
-    graphContentRight.appendChild(image2Right);
-    xVal = a;
-    path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
-    for (var K = 1; K <= N; K++) {
-      
-      yVal = this.evaluateEquation(xVal);
-      if (isFinite(yVal) && !isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-        path = path + " v" + -1 * (parseFloat(yVal * this.widthy)) + " h" + (this.widthx * ((b - a) / N)) + " v" + ((parseFloat(yVal * this.widthy)));
-      } else {
-        if (isNaN(yVal)) {
-          path = "";
-          break;
-        }
-        if (yVal > parseInt($('#maxY').val())) {
-          path = path + " v" + -1 * (parseFloat($('#maxY').val() * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat($('#maxY').val() * this.widthy)));
+      });
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+      Graph.integralValue = e.data.Integral;
+      MathJax.Hub.Queue(function() {
+        if (Graph.integralValue != "diverges") {
+          $('#integral').empty().append("`int_(" + a + ")^(" + b + ")" + Graph.equationToEval + " dx = " + Graph.integralValue + "`");
         } else {
-          path = path + " v" + -1 * (parseFloat($('#minY').val() * this.widthy)) + " m" + (this.widthx * ((b - a) / N)) + " 0 v" + ((parseFloat($('#minY').val() * this.widthy)));
+          $('#integral').empty().append("`int_(" + a + ")^(" + b + ")" + Graph.equationToEval + " dx `" + " " + Graph.integralValue);
         }
-
-      }
-      xVal = xVal + ((b - a) / N);
-
-    }
-    ////console.log(path);
-    image3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    image3.setAttribute('d', path);
-    image3.setAttribute('stroke-width', '2');
-    image3.setAttribute('stroke', 'Green');
-    image3.setAttribute('fill-opacity', 0);
-    image3.setAttribute('vector-effect', 'non-scaling-stroke');
-
-    image3Left = image3.cloneNode(true);
-
-    graphContent.appendChild(image3);
-    graphContentLeft.appendChild(image3Left);
-    //shade
-
-    xVal = a;
-    var highup = 0;
-    path = "M" + (20 + this.widthx * (a - parseInt($('#minX').val()))) + " " + Graph.xAxisPosition;
-    for (var K = xVal; K <= b; K += (1 / this.resolution)) {
-      K = parseFloat(K.toFixed(6));
-      
-      yVal = this.evaluateEquation(K);
-      if (!isNaN(yVal) && yVal <= parseInt($('#maxY').val()) && yVal >= parseInt($('#minY').val())) {
-
-        if (isFinite(yVal)) {
-          path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat(yVal * this.widthy)) + " ";
-        } else {
-          path += " V" + (Graph.xAxisPosition);
-          //console.log("asymptote in shaded region");
-        }
-      } else {
-        if (isNaN(yVal)) {
-          path = "";
-          //console.log(yVal + ' ' + K);
-          break;
-        }
-        if (yVal > parseInt($('#maxY').val())) {
-          path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#maxY').val() * this.widthy + 30)) + " ";
-        } else {
-          path += "L" + (Graph.yAxisPosition + parseFloat((K) * (this.widthx))) + " " + (Graph.xAxisPosition - parseFloat($('#minY').val() * this.widthy - 30)) + " ";
-        }
-      }
-
-
-    }
-    if (path.length > 0) {
-      //if (isFinite(yVal)) {
-      // //console.log(parseFloat(yVal * this.widthy))
-      path += "L" + (Graph.yAxisPosition + parseFloat(b * (this.widthx))) + " " + (Graph.xAxisPosition) + " ";
-      //}
-
-
-      path += "z";
-    }
-    image4 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    image4.setAttribute('d', path);
-    image4.setAttribute('stroke-width', '2');
-    image4.setAttribute('stroke', 'black');
-    image4.setAttribute('fill-opacity', 0.5);
-    image4.setAttribute('fill', '#999');
-    image4.setAttribute('vector-effect', 'non-scaling-stroke');
-
-    graphContentIntegral.appendChild(image4);
-    Graph.leftSumValue = 0;
-    Graph.rightSumValue = 0;
-    Graph.integralValue = 0;
-    Graph.leftSum();
-    Graph.rightSum();
-    Graph.integral();
-
-
+      });
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+      sumWork.terminate();
+      $('#popup').toggleClass("none");
+  }
+    });
+    sumWork.postMessage({ 'equationToEval': Graph.equationToEval, 'tinyX': $("#minX").val(), 'largeX': $("#maxX").val(), 'tinyY': $("#minY").val(), 'largeY': $("#maxY").val(), 'N': parseInt($('#rectangles').val()), 'a': parseInt($('#a').val()), 'b': parseInt($('#b').val()) });
   },
   rightSum: function() {
     var N = parseInt($('#rectangles').val());

@@ -262,32 +262,10 @@
         <figcaption id="integral"></figcaption>
         <figure>
     </div>
-    <!-- <div id='popup' class='none'>
+    <div id='popup' class='none'>
     <p id='stage'>Graphing</p>
     <p id='message'></p>
-    </div> -->
-    <script>
-    math.pow = function(a, b) {
-      try {
-        var bb = math.fraction(b);
-        //console.log(bb.d);
-        if (a < 0 && bb.d % 2 == 1 && bb.d != 1) {
-          return -1 * Math.pow(-1 * a, b);
-        } else {
-          return Math.pow(a, b);
-        }
-      } catch (e) {
-        
-        // $('#popup #message').empty().append("An error has been encountered while attempting to evaluate the given expression.  We will continue to attempt graphing the function, however the output may not be correct.");
-        
-            return Math.pow(a, b);
-        
-        
-      } finally {
-        
-      }
-    }
-    </script>
+    </div>
   </section>
 </body>
 
