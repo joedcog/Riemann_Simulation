@@ -107,7 +107,13 @@ self.addEventListener('message', function(e) {
           //neg inf
         }
       } else if (yVal > parseInt(largeY) && prevY < parseInt(tinyY)) { //handle extremely fast changes that would not be graphed
+          //path += "M" + (yAxisPosition + parseFloat((xVal + ((j-1) / resolution)) * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(tinyY) * widthy)) + " ";
+          //path += "L" + (yAxisPosition + parseFloat((xVal + (j / resolution)) * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(largeY) * widthy)) + " ";
+          //path += "M" + (yAxisPosition + parseFloat((xVal + (j / resolution)) * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(largeY) * widthy)) + " ";
       } else if (yVal < parseInt(tinyY) && prevY > parseInt(largeY)) { //handle extremely fast changes that would not be graphed
+          //path += "M" + (yAxisPosition + parseFloat((xVal + ((j-1) / resolution)) * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(largeY) * widthy)) + " ";
+          //path += "L" + (yAxisPosition + parseFloat((xVal + (j / resolution)) * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(tinyY) * widthy)) + " ";
+          //path += "M" + (yAxisPosition + parseFloat((xVal + (j / resolution)) * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(tinyY) * widthy)) + " ";
       } else if (yVal > parseInt(largeY) && path != "") {
         if (prevY < parseInt(largeY)) { //only draw if previous value was on graph and current value goes off graph
 
