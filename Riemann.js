@@ -453,7 +453,7 @@ var Graph = {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         Graph.integralValue = e.data.Integral;
         MathJax.Hub.Queue(function() {
-          if (Graph.integralValue != "diverges") {
+          if (Graph.integralValue != "diverges" && !isNaN(Graph.integralValue)) {
             $('#integral').empty().append("`int_(" + a + ")^(" + b + ")" + Graph.equationToEval + " dx = " + Graph.integralValue + "`");
           } else {
             $('#integral').empty().append("`int_(" + a + ")^(" + b + ")" + Graph.equationToEval + " dx `" + " " + Graph.integralValue);
