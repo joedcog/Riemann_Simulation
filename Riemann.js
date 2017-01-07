@@ -231,13 +231,24 @@ var Graph = {
     var axisLinesRight = document.getElementById('axisRight');
     
     this.widthx = 460 / Math.abs(parseInt($('#minX').val()) - parseInt($('#maxX').val()));
-    
+    var vertical;
+    var verticalLeft;
+    var verticalIntegral;
+    var verticalRight;
+    var axisVal;
+    var textNode;
+    var textNodeLeft;
+    var textNodeIntegral;
+    var textNodeRight;
+    var axisValLeft;
+    var axisValRight;
+    var axisValIntegral;
     x = parseInt($('#minX').val());
     var i = 20;
     for (j = parseInt($('#minX').val()); j <= parseInt($('#maxX').val()); j++) {
 
 
-      var vertical = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      vertical = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
       vertical.setAttribute('d', 'M' + i + ' 20 v' + (svgHeight - 40));
       if (x != 0) {
@@ -247,21 +258,21 @@ var Graph = {
         vertical.setAttribute('id', 'yAxisLine');
         vertical.setAttribute('stroke', 'black');
       }
-      var verticalLeft = vertical.cloneNode(true);
-      var verticalIntegral = vertical.cloneNode(true);
-      var verticalRight = vertical.cloneNode(true);
+      verticalLeft = vertical.cloneNode(true);
+      verticalIntegral = vertical.cloneNode(true);
+      verticalRight = vertical.cloneNode(true);
       axisLines.appendChild(vertical);
       axisLinesLeft.appendChild(verticalLeft);
       axisLinesIntegral.appendChild(verticalIntegral);
       axisLinesRight.appendChild(verticalRight);
       //set values
       if (x == $('#minX').val() || x == $('#maxX').val() || x == 0) {
-        var axisVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        axisVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 
-        var textNode = document.createTextNode(x);
-        var textNodeLeft = textNode.cloneNode(true);
-        var textNodeIntegral = textNode.cloneNode(true);
-        var textNodeRight = textNode.cloneNode(true);
+        textNode = document.createTextNode(x);
+        textNodeLeft = textNode.cloneNode(true);
+        textNodeIntegral = textNode.cloneNode(true);
+        textNodeRight = textNode.cloneNode(true);
         axisVal.setAttribute('x', i);
         axisVal.setAttribute('id', "x" + x)
 
@@ -275,9 +286,9 @@ var Graph = {
         axisVal.setAttribute('text-anchor', 'middle');
         axisVal.setAttribute('vector-effect', 'non-scaling-stroke');
 
-        var axisValLeft = axisVal.cloneNode(true);
-        var axisValIntegral = axisVal.cloneNode(true);
-        var axisValRight = axisVal.cloneNode(true);
+        axisValLeft = axisVal.cloneNode(true);
+        axisValIntegral = axisVal.cloneNode(true);
+        axisValRight = axisVal.cloneNode(true);
         axisVal.appendChild(textNode);
         axisLines.appendChild(axisVal);
 
@@ -297,10 +308,14 @@ var Graph = {
     this.widthy = 460 / Math.abs(parseInt($('#minY').val()) - parseInt($('#maxY').val()));
     x = parseInt($('#maxY').val());
     i = 20;
+    var horizontal;
+    var horizontalLeft;
+    var horizontalIntegral;
+    var horizontalRight;
     for (j = parseInt($('#maxY').val()); j >= parseInt($('#minY').val()); j--) {
 
 
-      var horizontal = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      horizontal = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
       horizontal.setAttribute('d', 'M20 ' + i + ' h' + (svgHeight - 40));
 
@@ -311,20 +326,20 @@ var Graph = {
         horizontal.setAttribute('id', 'xAxisLine');
         horizontal.setAttribute('stroke', 'black');
       }
-      var horizontalLeft = horizontal.cloneNode(true);
-      var horizontalIntegral = horizontal.cloneNode(true);
-      var horizontalRight = horizontal.cloneNode(true);
+      horizontalLeft = horizontal.cloneNode(true);
+      horizontalIntegral = horizontal.cloneNode(true);
+      horizontalRight = horizontal.cloneNode(true);
       axisLines.appendChild(horizontal);
       axisLinesLeft.appendChild(horizontalLeft);
       axisLinesIntegral.appendChild(horizontalIntegral);
       axisLinesRight.appendChild(horizontalRight);
       //set values
       if (x == $('#minY').val() || x == $('#maxY').val() || x == 0) {
-        var axisVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        var textNode = document.createTextNode(x);
-        var textNodeLeft = textNode.cloneNode(true);
-        var textNodeIntegral = textNode.cloneNode(true);
-        var textNodeRight = textNode.cloneNode(true);
+        axisVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textNode = document.createTextNode(x);
+        textNodeLeft = textNode.cloneNode(true);
+        textNodeIntegral = textNode.cloneNode(true);
+        textNodeRight = textNode.cloneNode(true);
         axisVal.setAttribute('y', i + 3.5);
         axisVal.setAttribute('x', 17);
         axisVal.setAttribute('id', "y" + x)
@@ -332,9 +347,9 @@ var Graph = {
         axisVal.setAttribute('font-weight', 'lighter');
         axisVal.setAttribute('text-anchor', 'end');
         axisVal.setAttribute('vector-effect', 'non-scaling-stroke');
-        var axisValLeft = axisVal.cloneNode(true);
-        var axisValIntegral = axisVal.cloneNode(true);
-        var axisValRight = axisVal.cloneNode(true);
+        axisValLeft = axisVal.cloneNode(true);
+        axisValIntegral = axisVal.cloneNode(true);
+        axisValRight = axisVal.cloneNode(true);
 
         axisVal.appendChild(textNode);
         axisLines.appendChild(axisVal);
