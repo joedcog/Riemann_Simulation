@@ -82,7 +82,7 @@ self.addEventListener('message', function(e) {
         } else if (prevY > parseInt(largeY)) {//from above window back onto window
           if(isFinite(prevY)){
             tempM = (yVal - prevY) * resolution;
-            tempB = tempM * (xVal + (j / resolution)) + (yVal);
+            tempB = tempM * (xVal + ((j-1) / resolution)) + (yVal);
             tempXValue = -1 * (parseInt(largeY) - tempB) / tempM;
             console.log(tempM + ' ' + ' ' + tempB + ' ' + tempXValue + '  ' + (xVal + (j / resolution)) + ' ' + yVal + ' ' + (xVal + ((j - 1) / resolution)) + ' ' + prevY);
             path += "M" + (yAxisPosition + parseFloat(tempXValue * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(largeY) * widthy)) + " ";
@@ -119,10 +119,10 @@ self.addEventListener('message', function(e) {
 
           if (isFinite(prevY)) {
             tempM = (yVal - prevY) * resolution;
-            tempB = tempM * (xVal + (j / resolution)) + (yVal);
+            tempB = tempM * (xVal + ((j-1) / resolution)) + (yVal);
             tempXValue = -1 * (parseInt(largeY) - tempB) / tempM;
             console.log(tempM + ' ' + ' ' + tempB + ' ' + tempXValue + '  ' + (xVal + (j / resolution)) + ' ' + yVal + ' ' + (xVal + ((j - 1) / resolution)) + ' ' + prevY);
-
+            console.log("L" + (yAxisPosition + parseFloat(tempXValue * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(largeY) * widthy)) + " ");
             path += "L" + (yAxisPosition + parseFloat(tempXValue * (widthx))) + " " + (xAxisPosition - parseFloat(parseInt(largeY) * widthy)) + " ";
           } else {//prevY is neg inf
             
@@ -134,7 +134,7 @@ self.addEventListener('message', function(e) {
 
           if (isFinite(prevY)) {
             tempM = (yVal - prevY) * resolution;
-            tempB = tempM * (xVal + (j / resolution)) + (yVal);
+            tempB = tempM * (xVal + ((j-1) / resolution)) + (yVal);
             tempXValue = -1 * (parseInt(tinyY) - tempB) / tempM;
             console.log(tempM + ' ' + ' ' + tempB + ' ' + tempXValue + '  ' + (xVal + (j / resolution)) + ' ' + yVal + ' ' + (xVal + ((j - 1) / resolution)) + ' ' + prevY);
 
