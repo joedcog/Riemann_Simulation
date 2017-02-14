@@ -149,7 +149,7 @@ var Graph = {
     if (minY == '' || minY == null || maxY == '' || maxY == null || minX == '' || minX == null || maxX == '' || maxX == null) {
       throw "Please ensure the minX, maxX, minY, and maxY values are defined."
     }
-    if ((a + '').includes('.') || (b + '').includes('.') || (rectangles + '').includes('.') || (minX + '').includes('.') || (maxX + '').includes('.') || (minY + '').includes('.') || (maxY + '').includes('.')) {
+    if ((a + '').indexOf('.') > 0 || (b + '').indexOf('.') > 0 || (rectangles + '').indexOf('.') > 0 || (minX + '').indexOf('.') > 0 || (maxX + '').indexOf('.') > 0 || (minY + '').indexOf('.') > 0 || (maxY + '').indexOf('.') > 0) {
       throw "This interactive requires integer inputs. Please ensure all of your values are integers"
     }
     if (b <= a) {
